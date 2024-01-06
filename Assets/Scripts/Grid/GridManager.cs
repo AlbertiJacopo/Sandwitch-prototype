@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,11 +17,13 @@ public class GridManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        InitGrid();
     }
 
     private void InitGrid()
     {
+        Tiles.Shuffle();
+
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -29,7 +32,7 @@ public class GridManager : MonoBehaviour
 
                 Tile tile = Tiles[j];
 
-                if (i == 0 && j == 0 || i == 4 && j == 4) tile.Breadification();
+                //if (i == 0 && j == 0 || i == 4 && j == 4) tile.Breadification();
                 tile.SetPos(i, j);
 
                 m_GridData[i, j].Add(tile);
@@ -67,5 +70,25 @@ public class GridManager : MonoBehaviour
         }
 
         m_GridData[x1, y1].Clear();
+    }
+
+    
+}
+
+public static class ListsCommands
+{
+    private static System.Random rng = new System.Random();
+
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 }
