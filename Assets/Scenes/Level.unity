@@ -2291,7 +2291,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8237b89b76e1a51428520529ed4985a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tiles: []
+  IngredientsList:
+  - {fileID: 1349481556}
+  - {fileID: 1166657181}
+  - {fileID: 372183372}
+  - {fileID: 1520717866}
+  - {fileID: 1140506931}
+  - {fileID: 2012512310}
+  - {fileID: 510285245}
+  - {fileID: 699797034}
+  - {fileID: 9868704}
+  - {fileID: 750303717}
+  - {fileID: 776156434}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &1771610947
 Transform:
   m_ObjectHideFlags: 0

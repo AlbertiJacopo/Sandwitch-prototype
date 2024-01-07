@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    public List<Tile> Tiles = new List<Tile>();
+    public List<Ingredient> IngredientsList = new List<Ingredient>();
 
-    private List<Tile>[,] m_GridData = new List<Tile>[4, 4];
+    private List<Ingredient>[,] m_GridData = new List<Ingredient>[4, 4];
 
-    private Tile m_FirstTile, m_SecondTile;
+    private Ingredient m_FirstTile, m_SecondTile;
 
     private void Awake()
     {
@@ -24,19 +24,21 @@ public class GridManager : MonoBehaviour
         InitGrid();
     }
 
+
     private void InitGrid()
     {
-        Tiles.Shuffle();
+        IngredientsList.Shuffle(); //shuffle the elemets of the list
 
+        //assigne for every grid position an ingredient
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                m_GridData[i, j] = new List<Tile>();
+                m_GridData[i, j] = new List<Ingredient>();
 
-                Tile tile = Tiles[j];
+                Ingredient tile = IngredientsList[j];
 
-                //if (i == 0 && j == 0 || i == 4 && j == 4) tile.Breadification();
+                //set the position of the ingredient's gameobject
                 tile.SetPos(i, j, 0);
 
                 m_GridData[i, j].Add(tile);
@@ -48,51 +50,77 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /// <summary>
+    /// set the first ingredient to be swapped
+    /// </summary>
+    /// <param name="param"></param>
     public void SetFirstSwapTile(object[] param)
     {
-        m_FirstTile = (Tile)param[0];
+        m_FirstTile = (Ingredient)param[0];
     }
-    
+
+    /// <summary>
+    /// set the second ingredient to be swapped
+    /// </summary>
+    /// <param name="param"></param>
     public void SetSecondSwapTile(object[] param)
     {
-        m_SecondTile = (Tile)param[0];
+        m_SecondTile = (Ingredient)param[0];
     }
 
+    /// <summary>
+    /// add all the ingrediens on a list the selected grid position to another one
+    /// </summary>
+    /// <param name="param"></param>
     public void AddToTile(object[] param)
     {
-        int x1 = m_FirstTile.GridPosX;
-        int y1 = m_FirstTile.GridPosY;
-        int x2 = m_SecondTile.GridPosX;
-        int y2 = m_SecondTile.GridPosY;
-
-        int n = 0;
-
-        foreach (Tile tile in m_GridData[x1, y1])
+        if (m_FirstTile != null && m_SecondTile != null)
         {
-            int i = 0;
+            //get x and y pos of the first list
+            int x1 = m_FirstTile.GridPosX;
+            int y1 = m_FirstTile.GridPosY;
+
+            //get x and y pos of the second list
+            int x2 = m_SecondTile.GridPosX;
+            int y2 = m_SecondTile.GridPosY;
+
+            int n = 0;
+
+            //reverse the list
             m_GridData[x1, y1].Reverse();
+        
+            //add ingredients and set their gameobjects' position
+            foreach (Ingredient tile in m_GridData[x1, y1])
+            {
+                int i = 0;
 
-            List<Tile> previous = m_GridData[x1, y1];
+                List<Ingredient> previous = m_GridData[x1, y1];
 
-            m_GridData[x2, y2].Add(previous[i]);
+                m_GridData[x2, y2].Add(previous[i]);
 
-            m_GridData[x2, y2][i].SetPos(x2, y2, n);
-            n++;
+                m_GridData[x2, y2][i].SetPos(x2, y2, n);
+                n++;
 
-            i++;
+                i++;
+            }
+
+            //clear the first list
+            m_GridData[x1, y1].Clear();
+        
+            //check win condition
+            CheckWin(m_GridData[x2, y2]);
+
+            //resets the first and second tile to swap
+            m_FirstTile = null;
+            m_SecondTile = null;
         }
-
-        m_GridData[x1, y1].Clear();
-        CheckWin(m_GridData[x2, y2]);
     }
 
-    private void CheckWin(List<Tile> list)
+    /// <summary>
+    /// check win and if it check true it makes the win screen appear
+    /// </summary>
+    /// <param name="list"></param>
+    private void CheckWin(List<Ingredient> list)
     {
         if (list[0].IsBread && list[list.Count].IsBread)
         {
@@ -103,10 +131,16 @@ public class GridManager : MonoBehaviour
 }
 
 
+//static class to permit to shuffle every list that need to
 public static class ListsCommands
 {
     private static System.Random rng = new System.Random();
 
+    /// <summary>
+    /// Shuffle a list
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
     public static void Shuffle<T>(this IList<T> list)
     {
         int n = list.Count;

@@ -14,11 +14,18 @@ public class UIManager : MonoBehaviour
         GameManager.instance.EventManager.Register(Constants.UI_SCREEN_SET_ACTIVE, ActivateUIScreen);
     }
 
+    /// <summary>
+    /// activate the ui screen in scene
+    /// </summary>
+    /// <param name="param"></param>
     public void ActivateUIScreen(object[] param)
     {
         m_UIScreen.SetActive(true);
     }
 
+    /// <summary>
+    /// restart the level
+    /// </summary>
     public void RestartLevel()
     {
         SceneManager.LoadScene(m_SceneName);
