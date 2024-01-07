@@ -9,9 +9,13 @@ public class GridManager : MonoBehaviour
 
     private List<Tile>[,] m_GridData = new List<Tile>[4, 4];
 
+    private Tile m_FirstTile, m_SecondTile;
+
     private void Awake()
     {
         GameManager.instance.EventManager.Register(Constants.ADD_TILES_TO_GRID_POS, AddToTile);
+        GameManager.instance.EventManager.Register(Constants.SET_FIRST_SWAP_TILE, SetFirstSwapTile);
+        GameManager.instance.EventManager.Register(Constants.SET_SECOND_SWAP_TILE, SetSecondSwapTile);
     }
 
     // Start is called before the first frame update
@@ -33,7 +37,7 @@ public class GridManager : MonoBehaviour
                 Tile tile = Tiles[j];
 
                 //if (i == 0 && j == 0 || i == 4 && j == 4) tile.Breadification();
-                tile.SetPos(i, j);
+                tile.SetPos(i, j, 0);
 
                 m_GridData[i, j].Add(tile);
 
@@ -50,12 +54,24 @@ public class GridManager : MonoBehaviour
         
     }
 
+    public void SetFirstSwapTile(object[] param)
+    {
+        m_FirstTile = (Tile)param[0];
+    }
+    
+    public void SetSecondSwapTile(object[] param)
+    {
+        m_SecondTile = (Tile)param[0];
+    }
+
     public void AddToTile(object[] param)
     {
-        int x1 = (int)param[0];
-        int y1 = (int)param[1];
-        int x2 = (int)param[2];
-        int y2 = (int)param[3];
+        int x1 = m_FirstTile.GridPosX;
+        int y1 = m_FirstTile.GridPosY;
+        int x2 = m_SecondTile.GridPosX;
+        int y2 = m_SecondTile.GridPosY;
+
+        int n = 0;
 
         foreach (Tile tile in m_GridData[x1, y1])
         {
@@ -66,14 +82,26 @@ public class GridManager : MonoBehaviour
 
             m_GridData[x2, y2].Add(previous[i]);
 
+            m_GridData[x2, y2][i].SetPos(x2, y2, n);
+            n++;
+
             i++;
         }
 
         m_GridData[x1, y1].Clear();
+        CheckWin(m_GridData[x2, y2]);
     }
 
+    private void CheckWin(List<Tile> list)
+    {
+        if (list[0].IsBread && list[list.Count].IsBread)
+        {
+            GameManager.instance.EventManager.TriggerEvent(Constants.UI_SCREEN_SET_ACTIVE);
+        }
+    }
     
 }
+
 
 public static class ListsCommands
 {
